@@ -1,0 +1,1 @@
+curl -H "Content-Type: application/json" -X POST -d '{"nome":"Joao","nascimento": "01010","cpf":"111","endereco":"aaa","telefone":"11121","email":"joaofreitas@gmail.com","senha":"1234"}' http://127.0.0.1:5000/cadastrar
