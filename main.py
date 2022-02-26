@@ -1,19 +1,19 @@
 from flask import request, make_response, abort
 from services.cadastro import main_cadastro
+from services.login import main_login
+from services.add_conta import main_adicionar_conta
 from flask_cors import cross_origin
 from setup import app, db
 
-@app.route('/')
-def home():
-    print("oi")
+#@app.route('/')
+#def home():
+#    print("oi")
 
 @app.route('/cadastrar', methods = ['POST'])
 @cross_origin()#headers = ["Content-Type"], methods = ['POST'], automatic_options = True)
 def API_cadastrar():
     # Dados cadastro: nome completo, nascimento, cpf, endereco, telefone, email, senha
-    print("teste5")
-    main_cadastro(request.get_json())
-    return '', 204
+    return main_cadastro(request.get_json())
 
 #def API_cadastrar():
     #print("entrou")
@@ -38,9 +38,19 @@ def API_cadastrar():
     
     #return abort(403)
 
+@app.route('/login', methods = ['POST'])
+@cross_origin()
+def API_login():
+    return main_login(request.get_json())
+
+@app.route('/addconta', methods = ['POST'])
+@cross_origin()
+def API_add_conta():
+    return main_adicionar_conta(request.get_json())
+
 if __name__ == "__main__":        
     db.create_all()
-    app.run(host='0.0.0.0', port=5000, debug = True)
+    app.run(debug = True)
 
 # Links uteis: 
 # https://docs.sqlalchemy.org/en/14/orm/query.html

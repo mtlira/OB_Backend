@@ -14,18 +14,20 @@ class CTL_login:
             cpfLogin = usuario.cpf
             return True
 
-def main_login():
+def main_login(json):
     # 1 - Usuario fornece dados de email e senha no front end
     # Implementar depois no front end
-    email = "joaofreitas@gmail.com"
-    senha = "1234"
+    #email = "joaofreitas@gmail.com"
+    #senha = "1234"
 
     # 2 - Chama validarAcesso do controlador
-    loginCorreto = CTL_login.validarAcesso(email, senha)
+    loginCorreto = CTL_login.validarAcesso(json['email'], json['senha'])
     if loginCorreto:
         print("Redirecionar para pagina Home") # FRONT END
+        return '', 202
     else:
         print("Email e/ou senha incorretos") # Remover depois. Essa mensagem sera mostrada na tela (FRONT-END)
+        return '', 401
 
 if __name__ == '__main__':
     main_login()

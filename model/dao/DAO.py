@@ -18,8 +18,8 @@ class DAO:
         if len(consulta) == 0: return None
         return consulta[0]
 
-    def contaExiste(id_banco, cpf):
-        if len(db.session.query(Usuario, Conta).filter(Usuario.id_usuario == Conta.id_usuario).one()) == 0:
+    def contaExiste(id_banco):
+        if len(db.session.query(Usuario, Conta).filter(Usuario.id_usuario == Conta.id_usuario and Conta.id_banco == id_banco).one()) == 0:
             return False
         else: 
             return True

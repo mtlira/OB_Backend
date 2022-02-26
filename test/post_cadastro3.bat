@@ -1,1 +1,0 @@
-curl -X POST -d @ficha_cadastro.txt http://127.0.0.1:5000/cadastrar --header "Content-Type:application/json"

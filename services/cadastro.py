@@ -6,10 +6,12 @@ def main_cadastro(ficha):
 
     # 2 - Chama o metodo cadastrar de CTL_Cadastro
     cadastrou = CTL_Cadastro.cadastrar(ficha)
-    if not cadastrou: 
+    if not cadastrou:
         print("CPF e/ou senha ja foram cadastrados.") # Remover depois. Essa mensagem sera mostrada na tela (front-end)
+        return '', 405
     else:
         print("Cadastro realizado com sucesso") # Remover depois. Essa mensagem sera mostrada na tela (front-end)
+        return '', 201
 
 ficha = {
     "nome": "João Freitas",
