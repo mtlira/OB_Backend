@@ -1,18 +1,6 @@
-from model.dao.DAO import DAO
-from global_variables import idLogin, cpfLogin
+from model.DAO import DAO
+from model.controller.ctl_login import CTL_login
 #from classes_negocio import Usuario
-
-class CTL_login:
-    def validarAcesso(email, senha):
-        # 3 - Puxa a senha do DB p/ verificar se: i) existe; ii) esta correta
-        usuario = DAO.getUsuario(email)
-        if senha == None or usuario.senha != senha:
-            return False
-        else:
-            global idLogin
-            idLogin = usuario.id_usuario
-            cpfLogin = usuario.cpf
-            return True
 
 def main_login(json):
     # 1 - Usuario fornece dados de email e senha no front end

@@ -18,11 +18,22 @@ class DAO:
         if len(consulta) == 0: return None
         return consulta[0]
 
-    def contaExiste(id_banco):
-        if len(db.session.query(Usuario, Conta).filter(Usuario.id_usuario == Conta.id_usuario and Conta.id_banco == id_banco).one()) == 0:
-            return False
-        else: 
-            return True
+    def contaExiste(id_banco, cpf):
+        existe = False
+        usuario = db.session.query(Usuario, Conta).join(Usuario.contas).filter(Usuario.cpf == cpf and Conta.id_banco == id_banco).all()
+
+        #query = db.select(Usuario, Conta).join(Usuario.contas)
+        #for conta in contas:
+            #if conta.id_banco == id_banco and 
+        #if usuario != None: print(usuario.nome, usuario.id_usuario, usuario.cpf)
+        #else: print("Usuario None")
+        #print(usuario[0])
+        if len(usuario) == 0: return False
+        else: return True
+        #if len(db.session.query(Usuario, Conta).filter(Usuario.cpf == cpf and Usuario.id_usuario == Conta.id_usuario and Conta.id_banco == id_banco).one()) == 0:
+        #    return False
+        #else: 
+        #    return True
 
     def persistirConta(json):
         id_usuario = db.session.query(Usuario).filter(Usuario.cpf == json['cpf_usuario']).all()[0].id_usuario

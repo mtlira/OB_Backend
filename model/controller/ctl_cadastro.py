@@ -1,4 +1,4 @@
-from model.dao.DAO import DAO
+from model.DAO import DAO
 class CTL_Cadastro:
     # 3 - Verifica-se se o email e cpf de cadastro ja existem na DB
     def cadastrar(ficha):

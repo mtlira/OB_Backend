@@ -1,3 +1,3 @@
 #idLogin: guarda o id que fez login em um dispositivo
-idLogin = -1
-cpfLogin = 999
+idLogin = None
+cpfLogin = None
