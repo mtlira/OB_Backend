@@ -1,4 +1,4 @@
-from model.business.classes_negocio import Usuario, Conta
+from model.business.classes_negocio import Usuario, Familia, Conta
 from setup import db
 
 class DAO:
@@ -41,3 +41,16 @@ class DAO:
         db.session.add(conta)
         db.session.commit()
         del conta
+
+    def getFamilia():
+        with open('login_info.txt') as file:
+            idLogin = file.readlines()[0].split()[1]
+        id_familia = db.session.query(Usuario.id_familia).filter(Usuario.id_usuario == idLogin).one()[0]
+        return id_familia
+
+    def persistirFamilia(id, nome, senha):
+        with open('login_info.txt') as file:
+            idLogin = file.readlines()[0].split()[1]
+        db.session.add(Familia(id, nome, senha))
+        db.session.query(Usuario).filter(Usuario.id_usuario == idLogin).update({"id_familia": id}, synchronize_session = False)
+        db.session.commit()

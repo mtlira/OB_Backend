@@ -2,6 +2,7 @@ from setup import db
 
 class Usuario(db.Model):
     id_usuario = db.Column(db.Integer, primary_key = True, autoincrement = True)
+    id_familia = db.Column(db.String(15), db.ForeignKey('familia.id_familia'))
     nome = db.Column(db.String(50),nullable = False)
     cpf = db.Column(db.Integer, nullable = False)
     endereco = db.Column(db.String(100), nullable = True)
@@ -17,12 +18,15 @@ class Usuario(db.Model):
         self.email = email
         self.senha = senha
 
-class Familia:
-    def __init__(self, id, senha, nome):
-        self._id = id
-        self._senha = senha
-        self._nome = nome
-        self._membros = []
+class Familia(db.Model):
+    id_familia = db.Column(db.String(15), primary_key = True)
+    nome = db.Column(db.String(30), nullable = False)
+    senha = db.Column(db.String(30),nullable = False)
+    membros = db.relationship('Usuario', backref = 'familia', lazy = True)
+    def __init__(self, id, nome, senha):
+        self.id_familia = id
+        self.nome = nome
+        self.senha = senha
     
     def adicionar(self,usuario):
         if usuario in self._membros: return False

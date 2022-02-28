@@ -1,13 +1,11 @@
-from flask import request, make_response, abort
+from flask import request
 from services.cadastro import main_cadastro
 from services.login import main_login
 from services.add_conta import main_adicionar_conta
+from model.controller.ctl_criar_familia import CTL_CriarFamilia
 from flask_cors import cross_origin
 from setup import app, db
 
-#@app.route('/')
-#def home():
-#    print("oi")
 
 @app.route('/cadastrar', methods = ['POST'])
 @cross_origin()#headers = ["Content-Type"], methods = ['POST'], automatic_options = True)
@@ -47,6 +45,11 @@ def API_login():
 @cross_origin()
 def API_add_conta():
     return main_adicionar_conta(request.get_json())
+
+@app.route('/criarfamilia', methods = ['POST'])
+@cross_origin()
+def API_criar_familia():
+    return CTL_CriarFamilia.criarFamilia(request.get_json())
 
 if __name__ == "__main__":        
     db.create_all()
