@@ -3,7 +3,7 @@ class CTL_login:
     def validarAcesso(email, senha):
         # 3 - Puxa a senha do DB p/ verificar se: i) existe; ii) esta correta
         usuario = DAO.getUsuario(email)
-        if senha == None or usuario.senha != senha:
+        if usuario == None or senha == None or usuario.senha != senha:
             return False
         else:
             file = open('login_info.txt','w')

@@ -1,0 +1,1 @@
+curl -X POST -d @familia.json http://127.0.0.1:5000/entrarfamilia --header "Content-Type:application/json"
