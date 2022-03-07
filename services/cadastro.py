@@ -1,4 +1,8 @@
 from model.controller.ctl_cadastro import CTL_Cadastro
+from flask import json
+
+from setup import app
+
 def main_cadastro(ficha):
     # 1 - A ficha de cadastro é obtida do frontend
     # Dados cadastro: nome completo, nascimento, cpf, endereco, telefone, email, senha
@@ -8,10 +12,32 @@ def main_cadastro(ficha):
     cadastrou = CTL_Cadastro.cadastrar(ficha)
     if not cadastrou:
         print("CPF ja cadastrado.") # Remover depois. Essa mensagem sera mostrada na tela (front-end)
-        return '', 405
+        
+        data = {
+            "mensagem": "JA_CADASTRADO"
+        }
+
+        response = app.response_class(
+            response=json.dumps(data),
+            status=200,
+            mimetype='application/json'
+        )
+        
+        return response, 405
+
     else:
         print("Cadastro realizado com sucesso") # Remover depois. Essa mensagem sera mostrada na tela (front-end)
-        return '', 201
+        data = {
+            "mensagem": "OK"
+        }
+
+        response = app.response_class(
+            response=json.dumps(data),
+            status=200,
+            mimetype='application/json'
+        )
+        
+        return response, 201
 
 ficha = {
     "nome": "João Freitas",
