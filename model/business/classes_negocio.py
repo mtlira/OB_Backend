@@ -10,6 +10,13 @@ class Usuario(db.Model):
     email = db.Column(db.String(50), nullable = False)
     senha = db.Column(db.String(30), nullable = False)
     contas = db.relationship('Conta', backref = 'usuario', lazy = True)
+    saldo_cc = 0
+    saldo_pp = 0
+    saldo_total = 0
+    pagamentos = db.relationship("Movimentacao", primaryjoin = "Usuario.id_usuario == Movimentacao.id_usuario_origem", backref = "usuario_origem", foreign_keys = "[Movimentacao.id_usuario_origem]")
+    recebimentos = db.relationship("Movimentacao", primaryjoin = "Usuario.id_usuario == Movimentacao.id_usuario_destino", backref = "usuario_destino", foreign_keys = "[Movimentacao.id_usuario_destino]")
+    #movimentacoes = db.relationship('Movimentacao', backref = 'usuario')
+    #pagamentos = db.relationship('Movimentacao',backref = 'pagador', lazy = "dynamic", foreign_keys = "id_usuario_origem")
     def __init__(self, nome, cpf, endereco, telefone, email, senha):
         self.nome = nome
         self.cpf = cpf
@@ -18,11 +25,26 @@ class Usuario(db.Model):
         self.email = email
         self.senha = senha
 
+    def centralizar(self):
+        for conta in self.contas:
+            self.saldo_cc += conta.saldo_cc
+            self.saldo_pp += conta.saldo_pp
+            self.saldo_total += conta.saldo_pp + conta.saldo_cc
+            
+
+class UsuarioSerializer:
+    def serial(usuario):
+        
+        pass
+
 class Familia(db.Model):
     id_familia = db.Column(db.String(15), primary_key = True)
     nome = db.Column(db.String(30), nullable = False)
     senha = db.Column(db.String(30),nullable = False)
     membros = db.relationship('Usuario', backref = 'familia', lazy = True)
+    saldo_cc = 0
+    saldo_pp = 0
+    saldo_total = 0
     def __init__(self, id, nome, senha):
         self.id_familia = id
         self.nome = nome
@@ -32,6 +54,20 @@ class Familia(db.Model):
         if usuario in self._membros: return False
         self._membros.append(usuario)
         return True
+    
+    def centralizar(self):
+        for usuario in self.membros:
+            #usuario.centralizar()
+            self.saldo_cc += usuario.saldo_cc
+            self.saldo_pp += usuario.saldo_pp
+            self.saldo_total += usuario.saldo_total
+
+    def getCentralizedInfo(self):
+        return {
+            "saldo_cc": self.saldo_cc,
+            "saldo_pp": self.saldo_pp,
+            "saldo_total": self.saldo_total
+        }
 
 class Conta(db.Model): #CONSERTAR https://flask-sqlalchemy.palletsprojects.com/en/2.x/models/#simple-example
     id_banco = db.Column(db.Integer, primary_key = True)
@@ -40,6 +76,9 @@ class Conta(db.Model): #CONSERTAR https://flask-sqlalchemy.palletsprojects.com/e
     cc = db.Column(db.Integer, nullable = False)
     saldo_cc = db.Column(db.Numeric, default = 0)
     saldo_pp = db.Column(db.Numeric, default = 0)
+    pagamentos = db.relationship("Movimentacao", primaryjoin = "Conta.id_banco == Movimentacao.id_banco_origem", backref = "banco_origem", foreign_keys = "[Movimentacao.id_banco_origem]")
+    recebimentos = db.relationship("Movimentacao", primaryjoin = "Conta.id_banco == Movimentacao.id_banco_destino", backref = "banco_destino", foreign_keys = "[Movimentacao.id_banco_destino]")
+    #movimentacoes = db.relationship('Movimentacao', backref = 'conta', lazy = True)
     def __init__(self, id_banco, id_usuario, agencia, cc):
         self.id_banco = id_banco
         self.id_usuario = id_usuario
@@ -49,13 +88,27 @@ class Conta(db.Model): #CONSERTAR https://flask-sqlalchemy.palletsprojects.com/e
         self.saldo_pp = 0
         self.extrato = []
 
-class Movimentacao:
-    def __init__(self, origem, destino, data, descricao, valor):
-        self._origem = origem
-        self._destino = destino
-        self._data = data
-        self._descricao = descricao
-        self._valor = valor
+class Movimentacao(db.Model):
+    id_banco_origem = db.Column(db.Integer, db.ForeignKey('banco_origem.id_banco'), primary_key = True)
+    id_usuario_origem = db.Column(db.Integer, db.ForeignKey('usuario_origem.id_usuario'), primary_key = True)
+    id_banco_destino = db.Column(db.Integer, db.ForeignKey('banco_destino.id_banco'), primary_key = True)
+    id_usuario_destino = db.Column(db.Integer, db.ForeignKey('usuario_destino.id_usuario'), primary_key = True)
+    #banco_origem = db.relationship("Conta", backref = "origem", foreign_keys = "[Movimentacao.id_banco_origem, Movimentacao.id_usuario.origem]")
+    #banco_destino = db.relationship("Conta", backref = "destino", foreign_keys = "[Movimentacao.id_banco_destino, Movimentacao.id_usuario_destino]")
+    #usuario_origem = db.relationship("Conta", backref = "usuario_origem", foreign_keys = "[Movimentacao.id_usuario_origem]")
+    #usuario_destino = db.relationship("Conta", backref = "usuario_destino", foreign_keys = "[Movimentacao.id_usuario_destino]")
+    data_hora = db.Column(db.DateTime, primary_key = True)
+    valor = db.Column(db.Numeric, nullable = False)
+    descricao = db.Column(db.String(100), nullable = True)
+
+    def __init__(self, id_banco_origem, id_banco_destino, id_usuario_origem, id_usuario_destino, data_hora, valor, descricao):
+        self.id_banco_origem = id_banco_origem
+        self.id_banco_destino = id_banco_destino
+        self.id_usuario_origem = id_usuario_origem
+        self.id_usuario_destino = id_usuario_destino
+        self.data_hora = data_hora
+        self.valor = valor
+        self.descricao = descricao
 
 class DAO:
     def cadastroExiste(ficha):

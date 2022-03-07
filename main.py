@@ -4,6 +4,7 @@ from services.login import main_login
 from services.add_conta import main_adicionar_conta
 from model.controller.ctl_criar_familia import CTL_CriarFamilia
 from model.controller.ctl_entrar_familia import CTL_EntrarFamilia
+from model.controller.ctl_centralizar_contas import CTL_CentralizarContas
 from flask_cors import cross_origin
 from setup import app, db
 
@@ -56,6 +57,11 @@ def API_criar_familia():
 @cross_origin()
 def API_entrar_familia():
     return CTL_EntrarFamilia.entrarFamilia(request.get_json())
+
+@app.route('/centralizarcontas', methods = ['GET'])
+@cross_origin()
+def API_centralizar_contas():
+    CTL_CentralizarContas.centralizar()
 
 if __name__ == "__main__":        
     db.create_all()

@@ -52,8 +52,13 @@ class DAO:
     #    id_familia = db.session.query(Usuario.id_familia).filter(Usuario.id_usuario == idLogin).one()[0]
     #    return id_familia
 
-    def getFamilia(id):
-        return db.session.query(Familia).filter(Familia.id_familia == id).one_or_none()
+    def getFamilia(id, servico):
+        if servico == "login":
+            return db.session.query(Familia).filter(Familia.id_familia == id).one_or_none()
+        elif servico == "centralizar":
+            return db.session.query(Familia).join(Familia.membros).filter(Usuario.id_usuario == id).one_or_none()
+        else:
+            return None
 
     def persistirFamilia(id, nome, senha):
         with open('login_info.txt') as file:
