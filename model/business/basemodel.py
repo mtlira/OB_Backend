@@ -1,9 +1,7 @@
 from flask import json
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm.attributes import QueryableAttribute
-from setup import app
-
-db = SQLAlchemy(app)
+from setup import app, db
 
 class BaseModel(db.Model):
     __abstract__ = True

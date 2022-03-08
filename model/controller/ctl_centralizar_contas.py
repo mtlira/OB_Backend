@@ -3,6 +3,14 @@ from json import dumps, JSONEncoder
 
 from sqlalchemy.ext.declarative import DeclarativeMeta
 
+from decimal import Decimal
+
+class DecimalEncoder(JSONEncoder):
+  def default(self, obj):
+    if isinstance(obj, Decimal):
+      return str(obj)
+    return JSONEncoder.default(self, obj)
+
 def new_alchemy_encoder():
     _visited_objs = []
 
@@ -41,8 +49,8 @@ class CTL_CentralizarContas:
         # fetch/update users' accounts from OB
         # simulacao
         for i in range (0,len(pessoas)):
-            pessoas[i].saldo_cc = 100 + 10*(i+1)
-            pessoas[i].saldo_pp = 500 + 10*(i+1)
+            pessoas[i].saldo_cc = Decimal(100.00 + 10.00*(i+1))
+            pessoas[i].saldo_pp = Decimal(500.00 + 10.00*(i+1))
             pessoas[i].centralizar()
         
         dict = {}
@@ -51,8 +59,8 @@ class CTL_CentralizarContas:
             familia.centralizar()
             dict['total_familia'] = familia.getCentralizedInfo()
         else: dict['total_familia'] = "None"
-        print("dict=\n",familia.__dict__)
-        print("usuario",pessoas[0].__dict__)
+        #print("dict=\n",familia.to_dict(show = ['membros', 'membros.contas','membros.pagamentos','membros.recebimentos']))
+        #print("usuario",pessoas[0].__dict__)
         #print("dictfamilia",dict(familia))
-        json = dumps(dict, cls=new_alchemy_encoder(), check_circular=False)
+        json = dumps(familia.to_dict(show = ['membros', 'membros.contas','membros.pagamentos','membros.recebimentos']), cls = DecimalEncoder, indent = 1)
         print(json)

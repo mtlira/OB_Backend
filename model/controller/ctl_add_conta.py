@@ -6,8 +6,8 @@ class CTL_AddContaBancaria: #Ajustar retornos!!
         #"OpenBanking.getConta(id, ag, cc)" (Implementar funcionalidade da app basica)
         conta = { #JSON obtido da app basica
             "id_banco": "567",
-            "cpf_usuario": "999",
-            "agencia": "300",
+            "cpf_usuario": "1000",
+            "agencia": "301",
             "cc": "456",
             "saldo_cc": "100",
             "saldo_pp": "5000"
