@@ -14,7 +14,7 @@ def main_cadastro(ficha):
         print("CPF ja cadastrado.") # Remover depois. Essa mensagem sera mostrada na tela (front-end)
         
         data = {
-            "mensagem": "JA_CADASTRADO"
+            "mensagem": False
         }
 
         response = app.response_class(
@@ -28,7 +28,7 @@ def main_cadastro(ficha):
     else:
         print("Cadastro realizado com sucesso") # Remover depois. Essa mensagem sera mostrada na tela (front-end)
         data = {
-            "mensagem": "OK"
+            "mensagem": True
         }
 
         response = app.response_class(
