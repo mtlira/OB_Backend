@@ -1,7 +1,7 @@
 from model.DAO import DAO
 class CTL_EntrarFamilia:
     def entrarFamilia(json):
-        if DAO.isInFamilia():
+        if DAO.isInFamilia() is not None:
             print("Voce ja esta em uma familia")
             return '', 405
         else:

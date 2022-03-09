@@ -1,6 +1,6 @@
 from model.controller.ctl_cadastro import CTL_Cadastro
-from flask import json
 
+from flask import json
 from setup import app
 
 def main_cadastro(ficha):
@@ -14,7 +14,7 @@ def main_cadastro(ficha):
         print("CPF ja cadastrado.") # Remover depois. Essa mensagem sera mostrada na tela (front-end)
         
         data = {
-            "mensagem": False
+            "mensagem": "JA_CADASTRADO"
         }
 
         response = app.response_class(
@@ -28,7 +28,7 @@ def main_cadastro(ficha):
     else:
         print("Cadastro realizado com sucesso") # Remover depois. Essa mensagem sera mostrada na tela (front-end)
         data = {
-            "mensagem": True
+            "mensagem": "OK"
         }
 
         response = app.response_class(

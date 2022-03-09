@@ -1,7 +1,7 @@
 from model.DAO import DAO
 class CTL_CriarFamilia:
     def criarFamilia(json):
-        if DAO.isInFamilia():
+        if DAO.isInFamilia() is not None:
             print("Voce ja possui uma familia")
             return '', 405
         elif DAO.familiaExiste(json['id_familia']):
