@@ -10,16 +10,16 @@ def main_adicionar_conta(json):
     status = CTL_AddContaBancaria.validarConta(json['id_banco'], json['agencia'], json['cc'])
     if status == 1: 
         print("Conta adicionada com sucesso")
-        return '', 201
+        return {"mensagem":"OK"}, 201
     elif status == 2:
         print("Conta ja foi adicionada")
-        return '', 405
+        return {"mensagem":"JA_ADICIONADA"}, 405
     elif status == 3:
         print("Conta vinculada a outro CPF")
-        return '',405
+        return {"mensagem":"OUTRO_CPF"},405
     else:
         print("Dados incorretos / Conta nao encontrada")
-        return '', 405
+        return {"mensagem":"NAO_ENCONTRADA"}, 405
 
 #Código de resultados:
 #Sucesso:

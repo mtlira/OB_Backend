@@ -12,10 +12,10 @@ def main_login(json):
     loginCorreto = CTL_login.validarAcesso(json['email'], json['senha'])
     if loginCorreto:
         print("Redirecionar para pagina Home") # FRONT END
-        return '', 202
+        return {"mensagem":"OK"}, 201
     else:
         print("Email e/ou senha incorretos") # Remover depois. Essa mensagem sera mostrada na tela (FRONT-END)
-        return '', 401
+        return {"mensagem":"DADOS_INCORRETOS"}, 401
 
 if __name__ == '__main__':
     main_login()

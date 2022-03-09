@@ -10,33 +10,10 @@ from setup import app, db
 
 
 @app.route('/cadastrar', methods = ['POST'])
-@cross_origin()#headers = ["Content-Type"], methods = ['POST'], automatic_options = True)
+@cross_origin()
 def API_cadastrar():
     # Dados cadastro: nome completo, nascimento, cpf, endereco, telefone, email, senha
     return main_cadastro(request.get_json())
-
-#def API_cadastrar():
-    #print("entrou")
-    #handle_result = {'result': True, 'msg': 'success'}
-    #try:
-    #    origin = request.environ['http://127.0.0.1']
-    #except KeyError:
-     #   origin = None
-
-    #if origin and origin.find('127.0.0.1') > -1:
-    #    main_cadastro(request.get_json())
-    #    resp = make_response(str(handle_result))
-    #    resp.headers['Content-Type'] = 'application/json'
-
-    #    h = resp.headers
-    #    h['Access-Control-Allow-Origin'] = 'http://127.0.0.1:3000'
-    #    h['Access-Control-Allow-Methods'] = 'GET, POST, PATCH, PUT, DELETE, OPTIONS'
-    #    h['Access-Control-Allow-Headers'] = 'Content-Type'
-
-    #    resp.headers = h
-    #    return resp
-    
-    #return abort(403)
 
 @app.route('/login', methods = ['POST'])
 @cross_origin()
