@@ -15,7 +15,7 @@ def main_login(data):
     # 2 - Chama validarAcesso do controlador
     loginCorreto = CTL_login.validarAcesso(data['email'], data['senha'])
     if loginCorreto:
-        print("Redirecionar para pagina Home") # FRONT END
+        print("Redirecionar para pagina Home. Login correto") # FRONT END
         # return '', 202
 
         data = {
