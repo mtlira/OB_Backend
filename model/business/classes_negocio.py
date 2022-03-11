@@ -53,7 +53,7 @@ class Familia(BaseModel):
     id_familia = db.Column(db.String(15), primary_key = True)
     nome = db.Column(db.String(30), nullable = False)
     senha = db.Column(db.String(30),nullable = False)
-    membros = db.relationship('Usuario', backref = 'familia', lazy = True)
+    membros = db.relationship('Usuario', backref = 'familia')
     saldo_cc = 0
     saldo_pp = 0
     saldo_total = 0
@@ -91,24 +91,80 @@ class Familia(BaseModel):
             "saldo_total": self.saldo_total
         }
 
+#class Movimentacao(BaseModel):
+#    id_banco_origem = db.Column(db.Integer, primary_key = True)
+#    id_usuario_origem = db.Column(db.Integer, primary_key = True)
+#    id_banco_destino = db.Column(db.Integer, primary_key = True)
+#    id_usuario_destino = db.Column(db.Integer, primary_key = True)
+    
+    
+#    #banco_origem = db.relationship("Conta", backref = "origem", foreign_keys = "[Movimentacao.id_banco_origem, Movimentacao.id_usuario.origem]")
+#    #banco_destino = db.relationship("Conta", backref = "destino", foreign_keys = "[Movimentacao.id_banco_destino, Movimentacao.id_usuario_destino]")
+#    #usuario_origem = db.relationship("Conta", backref = "usuario_origem", foreign_keys = "[Movimentacao.id_usuario_origem]")
+#    #usuario_destino = db.relationship("Conta", backref = "usuario_destino", foreign_keys = "[Movimentacao.id_usuario_destino]")
+#    data_hora = db.Column(db.DateTime, primary_key = True)
+#    valor = db.Column(db.Numeric, nullable = False)
+#    descricao = db.Column(db.String(100), nullable = True)
+
+#    __table_args__ = (
+#        ForeignKeyConstraint(['id_banco_origem','id_usuario_origem'], ['conta.id_banco', 'conta.id_usuario']),
+#        ForeignKeyConstraint(['id_banco_destino','id_usuario_destino'], ['conta.id_banco','conta.id_usuario'])
+#    )
+
+#    _default_fields = [
+#        "id_banco_origem",
+#        "id_usuario_origem",
+#        "id_banco_destino",
+#        "id_usuario_destino",
+#        "data_hora",
+#        "valor",
+#        "descricao"
+#    ]
+
+ #   def __init__(self, id_banco_origem, id_banco_destino, id_usuario_origem, id_usuario_destino, data_hora, valor, descricao):
+ #       self.id_banco_origem = id_banco_origem
+ #       self.id_banco_destino = id_banco_destino
+ #       self.id_usuario_origem = id_usuario_origem
+ #       self.id_usuario_destino = id_usuario_destino
+ #       self.data_hora = data_hora
+ #       self.valor = valor
+ #       self.descricao = descricao
+
+movimentacao = db.Table( 
+    "movimentacao", 
+    BaseModel.metadata,
+    db.Column("id_banco_origem", db.Integer, primary_key = True),
+    db.Column("id_usuario_origem",db.Integer, primary_key = True),
+    db.Column("id_banco_destino", db.Integer, primary_key = True),
+    db.Column("id_usuario_destino",db.Integer, primary_key = True),
+    db.Column("data_hora", db.DateTime, primary_key = True),
+    db.Column("valor",db.Numeric, nullable = False),
+    db.Column("descricao", db.String(100), nullable = True),
+    ForeignKeyConstraint(['id_banco_origem','id_usuario_origem'], ['conta.id_banco', 'conta.id_usuario']),
+    ForeignKeyConstraint(['id_banco_destino','id_usuario_destino'], ['conta.id_banco','conta.id_usuario'])
+)
+
 class Conta(BaseModel): #CONSERTAR https://flask-sqlalchemy.palletsprojects.com/en/2.x/models/#simple-example
-    id_banco = db.Column(db.Integer)
-    id_usuario = db.Column(db.Integer, db.ForeignKey('usuario.id_usuario'))
+    id_banco = db.Column(db.Integer, primary_key = True)
+    id_usuario = db.Column(db.Integer, db.ForeignKey('usuario.id_usuario'), primary_key = True)
     agencia = db.Column(db.Integer, nullable = False)
     cc = db.Column(db.Integer, nullable = False)
     saldo_cc = db.Column(db.Numeric, default = 0)
     saldo_pp = db.Column(db.Numeric, default = 0)
 
-    __table_args__ = (PrimaryKeyConstraint('id_banco', 'id_usuario'),)
+    #__table_args__ = (PrimaryKeyConstraint('id_banco', 'id_usuario'),)
 
     #pagamentos = db.relationship("Movimentacao", primaryjoin = "and_(Conta.id_banco == Movimentacao.id_banco_origem, Conta.id_usuario == Movimentacao.id_usuario_origem)", backref = "conta_origem", foreign_keys = "[Movimentacao.id_banco_origem, Movimentacao.id_usuario_origem]")
     #recebimentos = db.relationship("Movimentacao", primaryjoin = "and_(Conta.id_banco == Movimentacao.id_banco_destino, Conta.id_usuario == Movimentacao.id_usuario_destino)", backref = "conta_destino", foreign_keys = "[Movimentacao.id_banco_destino, Movimentacao.id_usuario_destino]")
-    pagamentos = db.relationship("Movimentacao", backref = "conta_origem", 
-        primaryjoin = "and_(Conta.id_banco == Movimentacao.id_banco_origem, Conta.id_usuario == Movimentacao.id_usuario_origem)",
-        foreign_keys = "[Movimentacao.id_banco_origem, Movimentacao.id_usuario_origem]")
-    recebimentos = db.relationship("Movimentacao", backref = "conta_destino", 
-        primaryjoin = "and_(Conta.id_banco == Movimentacao.id_banco_destino, Conta.id_usuario == Movimentacao.id_usuario_destino)",
-        foreign_keys = "[Movimentacao.id_banco_destino, Movimentacao.id_usuario_destino]")
+    #pagamentos = db.relationship("Conta", secondary = Movimentacao, backref = "conta_origem", 
+    #    primaryjoin = "and_(Conta.id_banco == Movimentacao.id_banco_origem, Conta.id_usuario == Movimentacao.id_usuario_origem)",
+    #    secondaryjoin = "and_(Conta.id_banco == Movimentacao.id_banco_destino, Conta.id_usuario == Movimentacao.id_usuario_destino)",
+    #    foreign_keys = "[Movimentacao.id_banco_origem, Movimentacao.id_usuario_origem]")
+    pagamentos = db.relationship("Conta", secondary = movimentacao, backref = "conta_origem", 
+        primaryjoin = "and_(Conta.id_banco == movimentacao.c.id_banco_origem, Conta.id_usuario == movimentacao.c.id_usuario_origem)",
+        secondaryjoin = "and_(Conta.id_banco == movimentacao.c.id_banco_destino, Conta.id_usuario == movimentacao.c.id_usuario_destino)",
+        foreign_keys = "[movimentacao.c.id_banco_origem, movimentacao.c.id_usuario_origem,movimentacao.c.id_banco_destino, movimentacao.c.id_usuario_destino]")
+    
     _default_fields = [
         "id_banco",
         "id_usuario",
@@ -129,42 +185,3 @@ class Conta(BaseModel): #CONSERTAR https://flask-sqlalchemy.palletsprojects.com/
         self.saldo_pp = 0
         self.extrato = []
 
-class Movimentacao(BaseModel):
-    id_banco_origem = db.Column(db.Integer)
-    id_usuario_origem = db.Column(db.Integer)
-    id_banco_destino = db.Column(db.Integer)
-    id_usuario_destino = db.Column(db.Integer)
-    
-    
-    #banco_origem = db.relationship("Conta", backref = "origem", foreign_keys = "[Movimentacao.id_banco_origem, Movimentacao.id_usuario.origem]")
-    #banco_destino = db.relationship("Conta", backref = "destino", foreign_keys = "[Movimentacao.id_banco_destino, Movimentacao.id_usuario_destino]")
-    #usuario_origem = db.relationship("Conta", backref = "usuario_origem", foreign_keys = "[Movimentacao.id_usuario_origem]")
-    #usuario_destino = db.relationship("Conta", backref = "usuario_destino", foreign_keys = "[Movimentacao.id_usuario_destino]")
-    data_hora = db.Column(db.DateTime)
-    valor = db.Column(db.Numeric, nullable = False)
-    descricao = db.Column(db.String(100), nullable = True)
-
-    __table_args__ = (
-        PrimaryKeyConstraint('id_banco_origem', 'id_banco_destino', 'id_usuario_origem', 'id_usuario_destino', 'data_hora'),
-        ForeignKeyConstraint(['id_banco_origem','id_usuario_origem'], ['conta_origem.id_banco', 'conta_origem.id_usuario']),
-        ForeignKeyConstraint(['id_banco_destino','id_usuario_destino'], ['conta_destino.id_banco','conta_destino.id_usuario'])
-    )
-
-    _default_fields = [
-        "id_banco_origem",
-        "id_usuario_origem",
-        "id_banco_destino",
-        "id_usuario_destino",
-        "data_hora",
-        "valor",
-        "descricao"
-    ]
-
-    def __init__(self, id_banco_origem, id_banco_destino, id_usuario_origem, id_usuario_destino, data_hora, valor, descricao):
-        self.id_banco_origem = id_banco_origem
-        self.id_banco_destino = id_banco_destino
-        self.id_usuario_origem = id_usuario_origem
-        self.id_usuario_destino = id_usuario_destino
-        self.data_hora = data_hora
-        self.valor = valor
-        self.descricao = descricao

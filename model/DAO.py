@@ -53,7 +53,7 @@ class DAO:
     #    return id_familia
 
     def getFamilia(id, servico):
-        if servico == "login":
+        if servico == "login" or servico == "entrar_familia":
             return db.session.query(Familia).filter(Familia.id_familia == id).one_or_none()
         elif servico == "centralizar":
             return db.session.query(Familia).join(Familia.membros).filter(Usuario.id_usuario == id).one_or_none()

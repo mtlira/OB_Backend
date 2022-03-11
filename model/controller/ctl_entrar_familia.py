@@ -5,7 +5,7 @@ class CTL_EntrarFamilia:
             print("Voce ja esta em uma familia")
             return {"mensagem":"JA_POSSUI_FAMILIA"}, 405
         else:
-            familia = DAO.getFamilia(json['id_familia'])
+            familia = DAO.getFamilia(json['id_familia'], "entrar_familia")
             if familia == None:
                 print("Dados incorretos ou a familia nao existe")
                 return {"mensagem":"INC_OU_NEX"}, 405
