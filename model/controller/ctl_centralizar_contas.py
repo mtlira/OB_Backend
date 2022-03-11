@@ -59,8 +59,6 @@ class CTL_CentralizarContas:
             familia.centralizar()
             dict['total_familia'] = familia.getCentralizedInfo()
         else: dict['total_familia'] = "None"
-        #print("dict=\n",familia.to_dict(show = ['membros', 'membros.contas','membros.pagamentos','membros.recebimentos']))
-        #print("usuario",pessoas[0].__dict__)
-        #print("dictfamilia",dict(familia))
+        print(familia.membros[0].contas[0].pagamentos)
         json = dumps(familia.to_dict(show = ['membros', 'membros.contas','membros.contas.pagamentos']), cls = DecimalEncoder, indent = 1)
         print(json)
