@@ -14,15 +14,15 @@ class CTL_CentralizarContas:
         dict = familia if familia != None else {'id_familia':'None'}
         dict['saldo_cc'] = Decimal(0.00)
         dict['saldo_pp'] = Decimal(0.00)
-        
+
         #Usuario
-        dict['membros'] = DAO.getMembros(familia) if familia != None else [DAO.getUsuario(idLogin, "idLogin")]
+        dict['membros'] = DAO.getMembros(familia['id_familia']) if familia != None else [DAO.getUsuario(idLogin, "idLogin")]
 
         #Contas
         for membro in dict['membros']:
-            membro['contas'] = DAO.getContas(membro['id_usuario'])
             membro['saldo_cc'] = Decimal(0.00)
             membro['saldo_pp'] = Decimal(0.00)
+            membro['contas'] = DAO.getContas(membro['id_usuario'])
             
             #Movimentacoes
             #print('#####contas####\n',membro['contas'])
