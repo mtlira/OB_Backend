@@ -1,7 +1,7 @@
 from decimal import Decimal
 from model.business.classes_negocio import Usuario, Familia, Conta, Movimentacao
-from setup import db
-from sqlalchemy import select, and_, or_
+from .business.classes_negocio import db
+from sqlalchemy import insert, and_, or_
 
 def serialize(row, table):
     dict = {}
@@ -11,60 +11,63 @@ def serialize(row, table):
 
 class DAO:
     def cadastroExiste(ficha):
-        consulta = db.session.query(Usuario).filter(Usuario.c.email == ficha['email'] or Usuario.c.cpf == ficha['cpf']).all()
+        consulta = db.session.query(Usuario).filter(or_(Usuario.c.email == ficha['email'], Usuario.c.cpf == ficha['cpf'])).all()
         if len(consulta) != 0: return True
         else: return False
 
     def persistirCadastro(ficha):
-        cadastro = Usuario(ficha['nome'],ficha['cpf'],ficha['endereco'],ficha['telefone'],ficha['email'],ficha['senha'])
-        db.session.add(cadastro)
-        db.session.commit()
-        del cadastro
+        stmt = insert(Usuario).values(
+            nome = ficha['nome'],
+            cpf = ficha['cpf'],
+            endereco = ficha['endereco'],
+            telefone = ficha['telefone'],
+            email = ficha['email'],
+            senha = ficha['senha']
+            )
+        
+        with db.engine.connect() as conn:
+            conn.execute(stmt)
 
-    def getUsuario(email):
-        consulta = db.session.query(Usuario).filter(Usuario.c.email == email).all()
-        if len(consulta) == 0: return None
-        return consulta[0]
+    def getUsuario(key, key_type):
+        query = None
+        if key_type == "email": 
+            query = db.session.query(Usuario).filter(Usuario.c.email == key).one_or_none()
+        if key_type == "idLogin":
+            query = db.session.query(Usuario).filter(Usuario.c.id_usuario == key).one_or_none()
+        
+        if query == None: return None
+        return serialize(query, Usuario)
 
     def contaExiste(id_banco, cpf):
-        existe = False
-        usuario = db.session.query(Usuario).join(Conta).filter(Usuario.c.cpf == cpf and Conta.c.id_banco == id_banco).all()
-
-        #query = db.select(Usuario, Conta).join(Usuario.contas)
-        #for conta in contas:
-            #if conta.id_banco == id_banco and 
-        #if usuario != None: print(usuario.nome, usuario.id_usuario, usuario.cpf)
-        #else: print("Usuario None")
-        #print(usuario[0])
-        if len(usuario) == 0: return False
+        query = db.session.query(Usuario).join(Conta).filter(and_(Usuario.c.cpf == cpf,Conta.c.id_banco == id_banco)).all()
+        if len(query) == 0: return False
         else: return True
-        #if len(db.session.query(Usuario, Conta).filter(Usuario.cpf == cpf and Usuario.id_usuario == Conta.id_usuario and Conta.id_banco == id_banco).one()) == 0:
-        #    return False
-        #else: 
-        #    return True
 
     def persistirConta(json):
-        id_usuario = db.session.query(Usuario).filter(Usuario.c.cpf == json['cpf_usuario']).one().id_usuario
-        conta = Conta(json['id_banco'], id_usuario, json['agencia'], json['cc'])
-        db.session.add(conta)
-        db.session.commit()
-        del conta
+        idUsuario = db.session.query(Usuario.c.id_usuario).filter(Usuario.c.cpf == json['cpf_usuario']).one()[0]
+        stmt = insert(Conta).values(
+            id_banco = json['id_banco'],
+            id_usuario = idUsuario,
+            agencia = json['agencia'],
+            cc = json['cc']
+            )
+        with db.engine.connect() as conn:
+            conn.execute(stmt)
 
     def familiaExiste(id):
         if db.session.query(Familia).filter(Familia.c.id_familia == id).one_or_none() != None:
             return True
         return False
-    #def getFamilia():
-    #    with open('login_info.txt') as file:
-    #        idLogin = file.readlines()[0].split()[1]
-    #    id_familia = db.session.query(Usuario.id_familia).filter(Usuario.id_usuario == idLogin).one()[0]
-    #    return id_familia
 
     def getFamilia(id, servico):
         if servico == "login" or servico == "entrar_familia":
-            return db.session.query(Familia).filter(Familia.c.id_familia == id).one_or_none()
+            query = db.session.query(Familia).filter(Familia.c.id_familia == id).one_or_none()
+            if query == None: return None
+            return serialize(query, Familia)
+
         elif servico == "centralizar":
             query = db.session.query(Familia).join(Usuario).filter(Usuario.c.id_usuario == id).one_or_none()
+            if query == None: return None
             return serialize(query, Familia) if query != None else None
         else:
             return None
@@ -92,8 +95,9 @@ class DAO:
 
     def getMembros(idFamilia):
         membros = []
-        query = db.session.query(Usuario).join(Familia).filter(Usuario.c.id_familia == idFamilia).all()
-        for usuario in query: membros.append(serialize(usuario, Usuario))
+        if idFamilia != None:
+            query = db.session.query(Usuario).join(Familia).filter(Usuario.c.id_familia == idFamilia).all()
+            for usuario in query: membros.append(serialize(usuario, Usuario))
         return membros
 
     def getContas(id_usuario):
@@ -104,8 +108,6 @@ class DAO:
 
     def getMovimentacoes(id_banco, id_usuario, tipo):
         movimentacoes = []
-        print(id_banco,Movimentacao.c.id_banco_origem,id_usuario, Movimentacao.c.id_usuario_origem)
-        print(id_banco,Movimentacao.c.id_banco_destino,id_usuario, Movimentacao.c.id_usuario_destino)
         if tipo == "pagamento": 
             query = db.session.query(Movimentacao).filter(
                 or_(

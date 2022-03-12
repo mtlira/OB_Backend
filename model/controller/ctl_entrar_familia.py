@@ -9,7 +9,7 @@ class CTL_EntrarFamilia:
             if familia == None:
                 print("Dados incorretos ou a familia nao existe")
                 return {"mensagem":"INC_OU_NEX"}, 405
-            elif familia.senha != json['senha']:
+            elif familia['senha'] != json['senha']:
                 print("Senha incorreta")
                 return {"mensagem":"SENHA_INCORRETA"}, 405
             else:

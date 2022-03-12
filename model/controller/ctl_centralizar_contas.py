@@ -1,10 +1,5 @@
 from model.DAO import DAO
-from json import dumps, JSONEncoder
-
-from sqlalchemy.ext.declarative import DeclarativeMeta
-
 from decimal import Decimal
-
 
 class CTL_CentralizarContas:
     def centralizar():
@@ -12,17 +7,16 @@ class CTL_CentralizarContas:
         with open('login_info.txt') as file:
             info = file.readlines()
             idLogin = info[0].split()[1]
-            emailLogin = info[1].split()[1]
+            cpfLogin = info[1].split()[1]
         
         #Familia
-        dict = DAO.getFamilia(idLogin, "centralizar")
-
-        #Usuario
-        #membros = DAO.getMembros(dict['id_familia'])
+        familia = DAO.getFamilia(idLogin, "centralizar")
+        dict = familia if familia != None else {'id_familia':'None'}
         dict['saldo_cc'] = Decimal(0.00)
         dict['saldo_pp'] = Decimal(0.00)
-        dict['membros'] = DAO.getMembros(dict['id_familia'])
-        #print(dict)
+        
+        #Usuario
+        dict['membros'] = DAO.getMembros(familia) if familia != None else [DAO.getUsuario(idLogin, "idLogin")]
 
         #Contas
         for membro in dict['membros']:
@@ -31,15 +25,15 @@ class CTL_CentralizarContas:
             membro['saldo_pp'] = Decimal(0.00)
             
             #Movimentacoes
-            print('#####contas####\n',membro['contas'])
+            #print('#####contas####\n',membro['contas'])
             for conta in membro['contas']:
-                conta['pagamentos'] = DAO.getMovimentacoes(conta['id_banco'], conta['id_usuario'], "pagamento")
+                conta['movimentacoes'] = DAO.getMovimentacoes(conta['id_banco'], conta['id_usuario'], "pagamento")
                 membro['saldo_cc'] += conta['saldo_cc']
                 membro['saldo_pp'] += conta['saldo_pp']
                 #conta['recebimentos'] = DAO.getMovimentacoes(conta['id_banco'], conta['id_usuario'], "recebimento")
-                print('###pagamentos###',conta['id_banco'],conta['id_usuario'],conta['pagamentos'])
+                #print('###movimentacoes###',conta['id_banco'],conta['id_usuario'],conta['movimentacoes'])
             dict['saldo_cc'] += membro['saldo_cc']
             dict['saldo_pp'] += membro['saldo_pp']
 
-        print(dict)
-        return '',201
+        #print(dict)
+        return dict,201
