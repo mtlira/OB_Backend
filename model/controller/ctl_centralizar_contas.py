@@ -5,60 +5,41 @@ from sqlalchemy.ext.declarative import DeclarativeMeta
 
 from decimal import Decimal
 
-class DecimalEncoder(JSONEncoder):
-  def default(self, obj):
-    if isinstance(obj, Decimal):
-      return str(obj)
-    return JSONEncoder.default(self, obj)
-
-def new_alchemy_encoder():
-    _visited_objs = []
-
-    class AlchemyEncoder(JSONEncoder):
-        def default(self, obj):
-            if isinstance(obj.__class__, DeclarativeMeta):
-                # don't re-visit self
-                if obj in _visited_objs:
-                    return None
-                _visited_objs.append(obj)
-
-                # an SQLAlchemy class
-                fields = {}
-                for field in [x for x in dir(obj) if not x.startswith('_') and x != 'metadata' and not x.startswith('query')]:
-                    fields[field] = obj.__getattribute__(field)
-                # a json-encodable dict
-                return fields
-
-            return JSONEncoder.default(self, obj)
-
-    return AlchemyEncoder
 
 class CTL_CentralizarContas:
     def centralizar():
+        #rowtodict = lambda r: {c.name: str(getattr(r, c.name)) for c in r.__table__.columns}
         with open('login_info.txt') as file:
             info = file.readlines()
             idLogin = info[0].split()[1]
             emailLogin = info[1].split()[1]
-        familia = DAO.getFamilia(idLogin, "centralizar")
-        if familia != None:
-            pessoas = familia.membros
-            print("######################achou familia",familia.nome, familia.membros[0].nome)
-        else:
-            pessoas = [DAO.getUsuario(emailLogin)]
         
-        # fetch/update users' accounts from OB
-        # simulacao
-        for i in range (0,len(pessoas)):
-            pessoas[i].saldo_cc = Decimal(100.00 + 10.00*(i+1))
-            pessoas[i].saldo_pp = Decimal(500.00 + 10.00*(i+1))
-            pessoas[i].centralizar()
-        
-        dict = {}
-        dict['usuarios'] = pessoas
-        if familia != None: 
-            familia.centralizar()
-            dict['total_familia'] = familia.getCentralizedInfo()
-        else: dict['total_familia'] = "None"
-        print(familia.membros[0].contas[0].pagamentos)
-        json = dumps(familia.to_dict(show = ['membros', 'membros.contas','membros.contas.pagamentos']), cls = DecimalEncoder, indent = 1)
-        print(json)
+        #Familia
+        dict = DAO.getFamilia(idLogin, "centralizar")
+
+        #Usuario
+        #membros = DAO.getMembros(dict['id_familia'])
+        dict['saldo_cc'] = Decimal(0.00)
+        dict['saldo_pp'] = Decimal(0.00)
+        dict['membros'] = DAO.getMembros(dict['id_familia'])
+        #print(dict)
+
+        #Contas
+        for membro in dict['membros']:
+            membro['contas'] = DAO.getContas(membro['id_usuario'])
+            membro['saldo_cc'] = Decimal(0.00)
+            membro['saldo_pp'] = Decimal(0.00)
+            
+            #Movimentacoes
+            print('#####contas####\n',membro['contas'])
+            for conta in membro['contas']:
+                conta['pagamentos'] = DAO.getMovimentacoes(conta['id_banco'], conta['id_usuario'], "pagamento")
+                membro['saldo_cc'] += conta['saldo_cc']
+                membro['saldo_pp'] += conta['saldo_pp']
+                #conta['recebimentos'] = DAO.getMovimentacoes(conta['id_banco'], conta['id_usuario'], "recebimento")
+                print('###pagamentos###',conta['id_banco'],conta['id_usuario'],conta['pagamentos'])
+            dict['saldo_cc'] += membro['saldo_cc']
+            dict['saldo_pp'] += membro['saldo_pp']
+
+        print(dict)
+        return '',201

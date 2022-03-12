@@ -38,7 +38,7 @@ def API_entrar_familia():
 @app.route('/centralizarcontas', methods = ['GET'])
 @cross_origin()
 def API_centralizar_contas():
-    CTL_CentralizarContas.centralizar()
+    return CTL_CentralizarContas.centralizar()
 
 if __name__ == "__main__":        
     db.create_all()
