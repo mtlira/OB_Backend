@@ -1,1 +1,1 @@
-curl -X POST -d @cadastro2.json http://127.0.0.1:5000/cadastrar --header "Content-Type:application/json"
+curl -X POST -d @cadastro3.json http://127.0.0.1:5000/cadastrar --header "Content-Type:application/json"

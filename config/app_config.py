@@ -1,0 +1,3 @@
+SQLALCHEMY_TRACK_MODIFICATIONS = False
+SECRET_KEY = 'secret string'
+CORS_HEADERS = 'Content-Type'

@@ -1,74 +1,30 @@
 from model.DAO import DAO
 
 from flask import json
-from setup import app
 
 class CTL_EntrarFamilia:
+    def temFamilia(json):
+        if DAO.isInFamilia(json['id_usuario']):
+            print("Voce ja possui uma familia")
+            return {"mensagem":"TRUE"}, 405
+        else:
+            print("Usuario nao possui familia")
+            return {"mensagem":"FALSE"}, 405
+
     def entrarFamilia(data):
         if DAO.isInFamilia() is not None:
             print("Voce ja esta em uma familia")
-            # return '', 405
-            
-            message = {
-                "mensagem": "JA_POSSUI_FAMILIA",
-                "idFamilia": DAO.isInFamilia()
-            }
-
-            response = app.response_class(
-                response=json.dumps(message),
-                status=200,
-                mimetype='application/json'
-            )
-            
-            return response, 405
-
+            return {"mensagem":"JA_POSSUI_FAMILIA"}, 405
         else:
-            familia = DAO.getFamilia(data['idFamilia'])
+            familia = DAO.getFamilia(json['id_familia'], "entrar_familia")
             if familia == None:
                 print("Dados incorretos ou a familia nao existe")
-                # return '', 405
-            
-                message = {
-                    "mensagem": "INC_OU_NEX"
-                }
-
-                response = app.response_class(
-                    response=json.dumps(message),
-                    status=200,
-                    mimetype='application/json'
-                )
-            
-                return response, 405
-                
-            elif familia.senha != data['senhaFamilia']:
+                return {"mensagem":"INC_OU_NEX"}, 405
+            elif familia['senha'] != json['senha']:
                 print("Senha incorreta")
-                # return '', 405
-                
-                message = {
-                    "mensagem": "SENHA_INCORRETA"
-                }
-
-                response = app.response_class(
-                    response=json.dumps(message),
-                    status=200,
-                    mimetype='application/json'
-                )
-            
-                return response, 405
+                return {"mensagem":"SENHA_INCORRETA"}, 405
             else:
-                DAO.persistirMembroFamilia(data['idFamilia'])
+                DAO.persistirMembroFamilia(json['id_familia'])
                 print("Adicionado a familia com sucesso")
-                # return '', 201
-
-                message = {
-                    "mensagem": "OK"
-                }
-
-                response = app.response_class(
-                    response=json.dumps(message),
-                    status=200,
-                    mimetype='application/json'
-                )
-            
-                return response, 201
+                return {"mensagem":"OK"}, 201
             
