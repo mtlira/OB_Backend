@@ -28,8 +28,8 @@ class CTL_CentralizarContas:
             #print('#####contas####\n',membro['contas'])
             for conta in membro['contas']:
                 conta['movimentacoes'] = DAO.getMovimentacoes(conta['id_banco'], conta['id_usuario'], "pagamento")
-                membro['saldo_cc'] += conta['saldo_cc']
-                membro['saldo_pp'] += conta['saldo_pp']
+                membro['saldo_cc'] += Decimal(conta['saldo_cc'])
+                membro['saldo_pp'] += Decimal(conta['saldo_pp'])
                 #conta['recebimentos'] = DAO.getMovimentacoes(conta['id_banco'], conta['id_usuario'], "recebimento")
                 #print('###movimentacoes###',conta['id_banco'],conta['id_usuario'],conta['movimentacoes'])
             dict['saldo_cc'] += membro['saldo_cc']

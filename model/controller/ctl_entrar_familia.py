@@ -1,17 +1,18 @@
 from model.DAO import DAO
 
-from flask import json
-
 class CTL_EntrarFamilia:
-    def temFamilia(json):
-        if DAO.isInFamilia(json['id_usuario']):
+    def temFamilia():
+        with open("login_info.txt",'r') as file:
+            lines = file.readlines()
+            idLogin = lines[0].split()[1]
+        if DAO.isInFamilia(idLogin):
             print("Voce ja possui uma familia")
             return {"mensagem":"TRUE"}, 405
         else:
             print("Usuario nao possui familia")
             return {"mensagem":"FALSE"}, 405
 
-    def entrarFamilia(data):
+    def entrarFamilia(json):
         if DAO.isInFamilia() is not None:
             print("Voce ja esta em uma familia")
             return {"mensagem":"JA_POSSUI_FAMILIA"}, 405

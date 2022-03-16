@@ -34,21 +34,30 @@ class CTL_AddContaBancaria: #Ajustar retornos!!
             "saldo_pp": "5000"
         }
 
-        conta = conta4
+        conta_cmi = { #JSON obtido da app basica
+            "id_banco": "2",
+            "cpf_usuario": "1234",
+            "agencia": "1",
+            "cc": "1",
+            "saldo_cc": "10",
+            "saldo_pp": "20.5"
+        }
+
+        conta = conta_cmi
 
         with open("login_info.txt",'r') as file:
             lines = file.readlines()
             idLogin = lines[0].split()[1]
             cpfLogin = lines[1].split()[1]
-        
-        if str(cpfLogin) != conta['cpf_usuario']:
-            print("Conta vinculada a outro CPF")
-            return {"mensagem":"OUTRO_CPF"}, 405
-
+                
         # Verifica se (id, ag, cc) da conta estao corretos
-        elif conta == None or id != conta['id_banco'] or ag != conta['agencia'] or cc != conta['cc']:
+        if conta == None or id != conta['id_banco'] or ag != conta['agencia'] or cc != conta['cc']:
             print("Dados incorretos / Conta nao encontrada")
             return {"mensagem":"NAO_ENCONTRADA"}, 405
+        
+        elif str(cpfLogin) != conta['cpf_usuario']:
+            print("Conta vinculada a outro CPF")
+            return {"mensagem":"OUTRO_CPF"}, 405
 
         elif DAO.contaExiste(id, cpfLogin):
             print("Conta ja foi adicionada")

@@ -24,7 +24,7 @@ def API_login():
 @bp.route('/temfamilia', methods = ['GET'])
 @cross_origin()
 def API_tem_familia():
-    data, httpCode = CTL_EntrarFamilia.temFamilia(request.get_json())
+    data, httpCode = CTL_EntrarFamilia.temFamilia()
     return response(data, httpCode)
 
 @bp.route('/addconta', methods = ['POST'])
