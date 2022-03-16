@@ -72,11 +72,19 @@ class DAO:
         else:
             return None
 
-    def persistirFamilia(id, nome, senha):
+    def persistirFamilia(json):
         with open('login_info.txt') as file:
             idLogin = file.readlines()[0].split()[1]
-        db.session.add(Familia(id, nome, senha))
-        db.session.query(Usuario).filter(Usuario.c.id_usuario == idLogin).update({"id_familia": id}, synchronize_session = False)
+        
+        stmt = insert(Familia).values(
+            id_familia = json['id_familia'],
+            nome = json['nome'],
+            senha = json['senha']
+            )
+        with db.engine.connect() as conn:
+            conn.execute(stmt)
+
+        db.session.query(Usuario).filter(Usuario.c.id_usuario == idLogin).update({"id_familia": json['id_familia']}, synchronize_session = False)
         db.session.commit()
 
     def isInFamilia(id_usuario):

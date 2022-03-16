@@ -21,16 +21,16 @@ def API_login():
     data, httpCode = CTL_Login.login(request.get_json())
     return response(data, httpCode)
 
-@bp.route('/temfamilia', methods = ['GET'])
-@cross_origin()
-def API_tem_familia():
-    data, httpCode = CTL_EntrarFamilia.temFamilia(request.get_json())
-    return response(data, httpCode)
-
 @bp.route('/addconta', methods = ['POST'])
 @cross_origin()
 def API_add_conta():
     data, httpCode = CTL_AddContaBancaria.addConta(request.get_json())
+    return response(data, httpCode)
+
+@bp.route('/temfamilia', methods = ['GET'])
+@cross_origin()
+def API_tem_familia():
+    data, httpCode = CTL_EntrarFamilia.temFamilia(request.get_json())
     return response(data, httpCode)
 
 @bp.route('/criarfamilia', methods = ['POST'])

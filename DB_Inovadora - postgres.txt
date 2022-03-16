@@ -1,0 +1,49 @@
+--Familia(ID_FAMILIA, senha, nome)
+--Usuario(ID_USUARIO, id_familia(fk), nome, cpf, endereco, telefone, email, senha)
+--Conta(ID_BANCO, id_usuario(fk), ag, cc, saldo_cc, saldo_pp)
+--Movimentacao(DATA_HORA, id_banco_origem(fk), id_usuario_origem(fk), id_banco_destino(fk), --id_usuario_destino(fk), descricao, valor)
+
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+
+CREATE TABLE IF NOT EXISTS familia (
+	id_familia VARCHAR(15) PRIMARY KEY,
+	nome VARCHAR(30) NOT NULL,
+	senha VARCHAR(30) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS usuario (
+	id_usuario SERIAL PRIMARY KEY,
+	id_familia VARCHAR(15),
+	FOREIGN KEY (id_familia) REFERENCES familia (id_familia),
+	nome VARCHAR(50) NOT NULL,
+	cpf BIGINT UNIQUE NOT NULL,
+	endereco VARCHAR(100),
+	telefone BIGINT,
+	email VARCHAR(50) UNIQUE NOT NULL,
+	senha VARCHAR(30) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS conta(
+	id_banco INT NOT NULL,
+	id_usuario INT NOT NULL,
+	PRIMARY KEY(id_banco, id_usuario),
+	FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),
+	agencia INT NOT NULL,
+	cc INT NOT NULL,
+	saldo_cc NUMERIC DEFAULT 0,
+	saldo_pp NUMERIC DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS movimentacao(
+	id_banco_origem INT NOT NULL,
+	id_usuario_origem INT NOT NULL,
+	id_banco_destino INT NOT NULL,
+	id_usuario_destino INT NOT NULL,
+	data_hora TIMESTAMP NOT NULL,
+	valor NUMERIC NOT NULL,
+	descricao VARCHAR(100),
+	PRIMARY KEY(id_banco_origem, id_usuario_origem, id_banco_destino, id_usuario_destino, data_hora),
+	FOREIGN KEY (id_banco_origem, id_usuario_origem) REFERENCES conta(id_banco, id_usuario),
+	FOREIGN KEY (id_banco_destino, id_usuario_destino) REFERENCES conta(id_banco, id_usuario),
+)

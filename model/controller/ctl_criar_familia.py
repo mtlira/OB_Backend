@@ -14,6 +14,6 @@ class CTL_CriarFamilia:
             print("Esse id ja é de uma familia")
             return {"mensagem":"ID_NAO_DISPONIVEL"}, 405
         else:
-            DAO.persistirFamilia(json['id_familia'], json['nome_familia'], json['senha_familia'])
+            DAO.persistirFamilia(json)
             print("Famiia criada com sucesso")
             return {"mensagem":"OK"}, 201
