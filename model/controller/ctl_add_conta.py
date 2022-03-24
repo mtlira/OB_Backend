@@ -3,6 +3,8 @@ from global_variables import cpfLogin
 
 class CTL_AddContaBancaria: #Ajustar retornos!!
     def addConta(json):
+        #Redireciona pra app básica pra criar o consentimento
+        #Passar nome e cpf
         id = json['id_banco']
         ag = json['agencia']
         cc = json['cc']

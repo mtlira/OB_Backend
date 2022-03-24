@@ -1,8 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from config.db_config import SQLALCHEMY_DATABASE_URI
-from config.app_config import *
+from config.env_load import *
 from routes.blueprint import bp
 
 app = Flask(__name__)
