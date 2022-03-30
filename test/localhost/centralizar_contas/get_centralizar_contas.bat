@@ -1,1 +1,1 @@
-curl http:/127.0.0.1:5000/centralizarcontas
+curl -X GET -d @login.json http://127.0.0.1:5000/centralizarcontas --header "Content-Type:application/json"

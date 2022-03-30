@@ -9,8 +9,8 @@ class CTL_Login:
             print("Email e/ou senha incorretos")
             return {"mensagem":"DADOS_INCORRETOS"}, 401
         else:
-            file = open('login_info.txt','w')
-            file.write("idlogin {}\ncpfLogin {}".format(str(usuario['id_usuario']),str(usuario['cpf'])))
-            file.close()
+            #file = open('login_info.txt','w')
+            #file.write("idlogin {}\ncpfLogin {}".format(str(usuario['id_usuario']),str(usuario['cpf'])))
+            #file.close()
             print("Redirecionar para pagina Home")
-            return {"mensagem":"OK"}, 201
+            return {"mensagem":"OK","idLogin":"{}".format(usuario['id_usuario'])}, 201

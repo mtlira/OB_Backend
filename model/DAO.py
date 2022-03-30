@@ -61,7 +61,7 @@ class DAO:
 
     def getFamilia(id, servico):
         if servico == "login" or servico == "entrar_familia":
-            query = db.session.query(Familia).filter(Familia.c.id_familia == int(id)).one_or_none()
+            query = db.session.query(Familia).filter(Familia.c.id_familia == str(id)).one_or_none()
             if query == None: return None
             return serialize(query, Familia)
 

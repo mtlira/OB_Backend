@@ -48,7 +48,7 @@ def API_entrar_familia():
 @bp.route('/centralizarcontas', methods = ['GET'])
 @cross_origin()
 def API_centralizar_contas():
-    data, httpCode = CTL_CentralizarContas.centralizar()
+    data, httpCode = CTL_CentralizarContas.centralizar(request.get_json())
     return response(data, httpCode)
 
 @bp.route('/')

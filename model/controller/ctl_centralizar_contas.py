@@ -2,13 +2,10 @@ from model.DAO import DAO
 from decimal import Decimal
 
 class CTL_CentralizarContas:
-    def centralizar():
-        #rowtodict = lambda r: {c.name: str(getattr(r, c.name)) for c in r.__table__.columns}
-        with open('login_info.txt') as file:
-            info = file.readlines()
-            idLogin = info[0].split()[1]
-            cpfLogin = info[1].split()[1]
+    def centralizar(json):
         
+        idLogin = json['id_login']
+
         #Familia
         familia = DAO.getFamilia(idLogin, "centralizar")
         dict = familia if familia != None else {'id_familia':'None'}

@@ -4,15 +4,15 @@ from flask import json
 
 class CTL_EntrarFamilia:
     def temFamilia(json):
-        if DAO.isInFamilia(json['id_usuario']):
+        if DAO.isInFamilia(json['id_login']):
             print("Voce ja possui uma familia")
-            return {"mensagem":"TRUE"}, 405
+            return {"mensagem":"TRUE"}, 201
         else:
             print("Usuario nao possui familia")
-            return {"mensagem":"FALSE"}, 405
+            return {"mensagem":"FALSE"}, 201
 
-    def entrarFamilia(data):
-        if DAO.isInFamilia() is not None:
+    def entrarFamilia(json):
+        if DAO.isInFamilia(json['id_login']):
             print("Voce ja esta em uma familia")
             return {"mensagem":"JA_POSSUI_FAMILIA"}, 405
         else:

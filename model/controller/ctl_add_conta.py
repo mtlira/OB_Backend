@@ -8,6 +8,7 @@ class CTL_AddContaBancaria: #Ajustar retornos!!
         id = json['id_banco']
         ag = json['agencia']
         cc = json['cc']
+        idLogin = json['id_login']
         #"OpenBanking.getConta(id, ag, cc)" (Implementar funcionalidade da app basica)
         conta1 = { #JSON obtido da app basica
             "id_banco": "567",
@@ -38,12 +39,9 @@ class CTL_AddContaBancaria: #Ajustar retornos!!
 
         conta = conta4
 
-        with open("login_info.txt",'r') as file:
-            lines = file.readlines()
-            idLogin = lines[0].split()[1]
-            cpfLogin = lines[1].split()[1]
+        usuario = DAO.getUsuario(idLogin, "idLogin")
         
-        if str(cpfLogin) != conta['cpf_usuario']:
+        if str(usuario['cpf']) != conta['cpf_usuario']:
             print("Conta vinculada a outro CPF")
             return {"mensagem":"OUTRO_CPF"}, 405
 
@@ -52,7 +50,7 @@ class CTL_AddContaBancaria: #Ajustar retornos!!
             print("Dados incorretos / Conta nao encontrada")
             return {"mensagem":"NAO_ENCONTRADA"}, 405
 
-        elif DAO.contaExiste(id, cpfLogin):
+        elif DAO.contaExiste(id, usuario['cpf']):
             print("Conta ja foi adicionada")
             return {"mensagem":"JA_ADICIONADA"}, 405
 
