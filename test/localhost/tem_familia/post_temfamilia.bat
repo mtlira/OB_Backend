@@ -1,0 +1,1 @@
+curl -X GET -d @familia.json http://127.0.0.1:5000/temfamilia --header "Content-Type:application/json"

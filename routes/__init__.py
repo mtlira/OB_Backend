@@ -7,7 +7,7 @@ from model.controller.ctl_centralizar_contas import CTL_CentralizarContas
 from flask_cors import cross_origin
 from .blueprint import bp
 from .response_handler import response
-from flask import request
+from flask import request, render_template
 
 @bp.route('/cadastrar', methods = ['POST'])
 @cross_origin()
@@ -50,6 +50,16 @@ def API_entrar_familia():
 def API_centralizar_contas():
     data, httpCode = CTL_CentralizarContas.centralizar()
     return response(data, httpCode)
+
+@bp.route('/')
+@cross_origin()
+def home():
+    return "<p>homepage</p>"
+
+#@bp.route('/favicon.ico')
+#@cross_origin()
+#def favicon():
+#    return "", 200
 
 # Links uteis: 
 # https://docs.sqlalchemy.org/en/14/orm/query.html
