@@ -27,6 +27,7 @@ class DAO:
         
         with db.engine.connect() as conn:
             conn.execute(stmt)
+            conn.commit()
 
     def getUsuario(key, key_type):
         query = None
@@ -49,10 +50,13 @@ class DAO:
             id_banco = json['id_banco'],
             id_usuario = idUsuario,
             agencia = json['agencia'],
-            cc = json['cc']
+            cc = json['cc'],
+            saldo_cc = json['saldo_cc'],
+            saldo_pp = json['saldo_pp']
             )
         with db.engine.connect() as conn:
             conn.execute(stmt)
+            conn.commit()
 
     def familiaExiste(id):
         if db.session.query(Familia).filter(Familia.c.id_familia == id).one_or_none() != None:
@@ -73,9 +77,7 @@ class DAO:
             return None
 
     def persistirFamilia(json):
-        with open('login_info.txt') as file:
-            idLogin = file.readlines()[0].split()[1]
-        
+        idLogin = json['id_login']
         stmt = insert(Familia).values(
             id_familia = json['id_familia'],
             nome = json['nome'],
@@ -83,6 +85,7 @@ class DAO:
             )
         with db.engine.connect() as conn:
             conn.execute(stmt)
+            conn.commit()
 
         db.session.query(Usuario).filter(Usuario.c.id_usuario == idLogin).update({"id_familia": json['id_familia']}, synchronize_session = False)
         db.session.commit()
@@ -95,10 +98,10 @@ class DAO:
             return False
         return True         
 
-    def persistirMembroFamilia(id):
-        with open('login_info.txt') as file:
-            idLogin = file.readlines()[0].split()[1]
-        db.session.query(Usuario).filter(Usuario.c.id_usuario == idLogin).update({"id_familia": id}, synchronize_session = False)
+    def persistirMembroFamilia(json):
+        idLogin = json['id_login']
+        idFamilia = json['id_familia']
+        db.session.query(Usuario).filter(Usuario.c.id_usuario == idLogin).update({"id_familia": idFamilia}, synchronize_session = False)
         db.session.commit()
 
     def getMembros(idFamilia):

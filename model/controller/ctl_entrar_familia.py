@@ -24,7 +24,7 @@ class CTL_EntrarFamilia:
                 print("Senha incorreta")
                 return {"mensagem":"SENHA_INCORRETA"}, 405
             else:
-                DAO.persistirMembroFamilia(json['id_familia'])
+                DAO.persistirMembroFamilia(json)
                 print("Adicionado a familia com sucesso")
                 return {"mensagem":"OK"}, 201
             

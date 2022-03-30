@@ -10,24 +10,38 @@ class CTL_AddContaBancaria: #Ajustar retornos!!
         cc = json['cc']
         idLogin = json['id_login']
         #"OpenBanking.getConta(id, ag, cc)" (Implementar funcionalidade da app basica)
+
+        #Pedro Cunha
         conta1 = { #JSON obtido da app basica
+            "id_banco": "567",
+            "cpf_usuario": "999",
+            "agencia": "300",
+            "cc": "456",
+            "saldo_cc": "10",
+            "saldo_pp": "20"
+        }
+
+        #Joao Cunha
+        conta2 = { #JSON obtido da app basica
             "id_banco": "567",
             "cpf_usuario": "1000",
             "agencia": "301",
             "cc": "456",
             "saldo_cc": "100",
-            "saldo_pp": "5000"
+            "saldo_pp": "200"
         }
 
+        #Abelardo
         conta3 = { #JSON obtido da app basica
             "id_banco": "1",
             "cpf_usuario": "111",
             "agencia": "2",
             "cc": "3",
-            "saldo_cc": "100",
-            "saldo_pp": "5000"
+            "saldo_cc": "10000",
+            "saldo_pp": "15000"
         }
 
+        #Abelardo
         conta4 = { #JSON obtido da app basica
             "id_banco": "2",
             "cpf_usuario": "111",
@@ -37,7 +51,14 @@ class CTL_AddContaBancaria: #Ajustar retornos!!
             "saldo_pp": "5000"
         }
 
-        conta = conta4
+        try:
+            if json['teste'] == "1": conta = conta1
+            if json['teste'] == "2": conta = conta2
+            if json['teste'] == "3": conta = conta3
+            if json['teste'] == "4": conta = conta4
+        
+        except KeyError:
+            conta = conta1
 
         usuario = DAO.getUsuario(idLogin, "idLogin")
         
