@@ -7,10 +7,10 @@ class CTL_EntrarFamilia:
             idLogin = lines[0].split()[1]
         if DAO.isInFamilia(idLogin):
             print("Voce ja possui uma familia")
-            return {"mensagem":"TRUE"}, 405
+            return {"mensagem":"TRUE"}, 201
         else:
             print("Usuario nao possui familia")
-            return {"mensagem":"FALSE"}, 405
+            return {"mensagem":"FALSE"}, 201
 
     def entrarFamilia(json):
         if DAO.isInFamilia() is not None:

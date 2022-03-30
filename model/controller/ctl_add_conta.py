@@ -36,11 +36,11 @@ class CTL_AddContaBancaria: #Ajustar retornos!!
 
         conta_cmi = { #JSON obtido da app basica
             "id_banco": "2",
-            "cpf_usuario": "1234",
-            "agencia": "1",
-            "cc": "1",
-            "saldo_cc": "10",
-            "saldo_pp": "20.5"
+            "cpf_usuario": "123",
+            "agencia": "44",
+            "cc": "4123",
+            "saldo_cc": "500",
+            "saldo_pp": "0"
         }
 
         conta = conta_cmi

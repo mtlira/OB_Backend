@@ -4,7 +4,7 @@ class CTL_CriarFamilia:
     def temFamilia(id_usuario):
         if DAO.isInFamilia(id_usuario):
             print("Voce ja possui uma familia")
-            return {"mensagem":"TRUE"}, 405
+            return {"mensagem":"TRUE"}, 201
         else:
             print("Usuario nao possui familia")
             return {"mensagem":"FALSE"}, 405

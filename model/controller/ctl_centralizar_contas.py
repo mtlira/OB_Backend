@@ -11,15 +11,15 @@ class CTL_CentralizarContas:
         
         #Familia
         familia = DAO.getFamilia(idLogin, "centralizar")
-        dict = familia if familia != None else {'id_familia':'None'}
-        dict['saldo_cc'] = Decimal(0.00)
-        dict['saldo_pp'] = Decimal(0.00)
+        family_dict = familia if familia != None else {'id_familia':'None'}
+        family_dict['saldo_cc'] = Decimal(0.00)
+        family_dict['saldo_pp'] = Decimal(0.00)
 
         #Usuario
-        dict['membros'] = DAO.getMembros(familia['id_familia']) if familia != None else [DAO.getUsuario(idLogin, "idLogin")]
+        family_dict['membros'] = DAO.getMembros(familia['id_familia']) if familia != None else [DAO.getUsuario(idLogin, "idLogin")]
 
         #Contas
-        for membro in dict['membros']:
+        for membro in family_dict['membros']:
             membro['saldo_cc'] = Decimal(0.00)
             membro['saldo_pp'] = Decimal(0.00)
             membro['contas'] = DAO.getContas(membro['id_usuario'])
@@ -32,8 +32,9 @@ class CTL_CentralizarContas:
                 membro['saldo_pp'] += Decimal(conta['saldo_pp'])
                 #conta['recebimentos'] = DAO.getMovimentacoes(conta['id_banco'], conta['id_usuario'], "recebimento")
                 #print('###movimentacoes###',conta['id_banco'],conta['id_usuario'],conta['movimentacoes'])
-            dict['saldo_cc'] += membro['saldo_cc']
-            dict['saldo_pp'] += membro['saldo_pp']
+            family_dict['saldo_cc'] += membro['saldo_cc']
+            family_dict['saldo_pp'] += membro['saldo_pp']
 
-        #print(dict)
-        return dict,201
+        print ('>>>>>>>>>>>>>>>>>>>>>')
+        # print (family_dict["membros"][0]["contas"])
+        return family_dict,201
