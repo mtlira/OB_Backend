@@ -27,7 +27,7 @@ def API_add_conta():
     data, httpCode = CTL_AddContaBancaria.addConta(request.get_json())
     return response(data, httpCode)
 
-@bp.route('/temfamilia', methods = ['GET'])
+@bp.route('/temfamilia', methods = ['POST'])
 @cross_origin()
 def API_tem_familia():
     data, httpCode = CTL_EntrarFamilia.temFamilia(request.get_json())
@@ -45,7 +45,7 @@ def API_entrar_familia():
     data, httpCode = CTL_EntrarFamilia.entrarFamilia(request.get_json())
     return response(data, httpCode)
 
-@bp.route('/centralizarcontas', methods = ['GET'])
+@bp.route('/centralizarcontas', methods = ['POST'])
 @cross_origin()
 def API_centralizar_contas():
     data, httpCode = CTL_CentralizarContas.centralizar(request.get_json())
