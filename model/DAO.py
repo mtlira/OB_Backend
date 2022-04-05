@@ -76,8 +76,7 @@ class DAO:
         else:
             return None
 
-    def persistirFamilia(json):
-        idLogin = json['id_login']
+    def persistirFamilia(idLogin, json):
         stmt = insert(Familia).values(
             id_familia = json['id_familia'],
             nome = json['nome'],

@@ -9,6 +9,7 @@ class CTL_EntrarFamilia:
             return {"mensagem":"TRUE"}, 201
         else:
             print("Usuario nao possui familia")
+            
             return {"mensagem":"FALSE"}, 201
 
     def entrarFamilia(json):
