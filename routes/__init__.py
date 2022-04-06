@@ -50,16 +50,17 @@ def API_cadastrar():
 @cross_origin()
 def API_login():
     data, httpCode = CTL_Login.login(request.get_json())
-    data['exp'] = datetime.utcnow() + timedelta(minutes = 60)
-    data.pop('mensagem',None)
-    token = {"token":jwt.encode(data, SECRET_KEY)}
+    if data['mensagem'] == "OK":
+        data['exp'] = datetime.utcnow() + timedelta(minutes = 60)
+        data.pop('mensagem',None)
+        data = {"mensagem":"OK", "token":jwt.encode(data, SECRET_KEY)} # data inclui o token
 
-    # Para testes
-    import os
-    with open(os.path.join(os.path.dirname(__file__), '..','test','jwt.txt'), 'w') as file:
-        file.write(token['token'])
+        # Para testes
+        import os
+        with open(os.path.join(os.path.dirname(__file__), '..','test','jwt.txt'), 'w') as file:
+            file.write(data['token'])
 
-    return response(token, httpCode)
+    return response(data, httpCode)
 
 @bp.route('/addconta', methods = ['POST'])
 @cross_origin()
