@@ -1,6 +1,6 @@
 from decimal import Decimal
 from model.business.classes_negocio import Usuario, Familia, Conta, Movimentacao
-from .business.classes_negocio import db
+from app import db
 from sqlalchemy import insert, and_, or_
 
 def serialize(row, table):
@@ -27,7 +27,7 @@ class DAO:
         
         with db.engine.connect() as conn:
             conn.execute(stmt)
-            conn.commit()
+            #conn.commit()
 
     def getUsuario(key, key_type):
         query = None
@@ -56,7 +56,7 @@ class DAO:
             )
         with db.engine.connect() as conn:
             conn.execute(stmt)
-            conn.commit()
+            #conn.commit()
 
     def familiaExiste(id):
         if db.session.query(Familia).filter(Familia.c.id_familia == id).one_or_none() != None:
@@ -70,13 +70,13 @@ class DAO:
             return serialize(query, Familia)
 
         elif servico == "centralizar":
-            query = db.session.query(Familia).join(Usuario).filter(Usuario.c.id_usuario == int(id)).one_or_none()
+            query = db.session.query(Familia.c.id_familia,Familia.c.nome).join(Usuario).filter(Usuario.c.id_usuario == int(id)).one_or_none()
             if query == None: return None
             return serialize(query, Familia) if query != None else None
         else:
             return None
 
-    def persistirFamilia(idLogin, json):
+    def persistirFamilia(json):
         stmt = insert(Familia).values(
             id_familia = json['id_familia'],
             nome = json['nome'],
@@ -84,9 +84,9 @@ class DAO:
             )
         with db.engine.connect() as conn:
             conn.execute(stmt)
-            conn.commit()
+            #conn.commit()
 
-        db.session.query(Usuario).filter(Usuario.c.id_usuario == idLogin).update({"id_familia": json['id_familia']}, synchronize_session = False)
+        db.session.query(Usuario).filter(Usuario.c.id_usuario == json['id_login']).update({"id_familia": json['id_familia']}, synchronize_session = False)
         db.session.commit()
 
     def isInFamilia(id_usuario):
@@ -106,8 +106,9 @@ class DAO:
     def getMembros(idFamilia):
         membros = []
         if idFamilia != None:
-            query = db.session.query(Usuario).join(Familia).filter(Usuario.c.id_familia == idFamilia).all()
-            for usuario in query: membros.append(serialize(usuario, Usuario))
+            query = db.session.query(Usuario.c.id_usuario, Usuario.c.id_familia, Usuario.c.nome).join(Familia).filter(Usuario.c.id_familia == idFamilia).all()
+            for usuario in query:
+                membros.append(serialize(usuario, Usuario))
         return membros
 
     def getContas(id_usuario):
