@@ -35,6 +35,7 @@ def token_required(f):
             return response({"mensagem":"TOKEN_INVALIDO"}, 401)
         #return the payload after login verified
         json = request.get_json()
+        if json == None: json = {}
         json['id_login'] = data['id_login']
 
         return f(json, *args, **kwargs)
@@ -69,7 +70,7 @@ def API_add_conta(json):
     data, httpCode = CTL_AddContaBancaria.addConta(json)
     return response(data, httpCode)
 
-@bp.route('/temfamilia', methods = ['POST'])
+@bp.route('/temfamilia', methods = ['GET'])
 @cross_origin()
 @token_required
 def API_tem_familia(json):
@@ -90,7 +91,7 @@ def API_entrar_familia(json):
     data, httpCode = CTL_EntrarFamilia.entrarFamilia(json)
     return response(data, httpCode)
 
-@bp.route('/centralizarcontas', methods = ['POST'])
+@bp.route('/centralizarcontas', methods = ['GET'])
 @cross_origin()
 @token_required
 def API_centralizar_contas(json):
