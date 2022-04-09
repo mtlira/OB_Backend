@@ -1,9 +1,22 @@
 from model.DAO import DAO
 from decimal import Decimal
+import requests
 
 class CTL_CentralizarContas:
     def centralizar(json):
         
+        # Para cada pessoa da familia, chamar /getcontas da basica
+        # response: json com dados bancarios de cada membro
+        # Para uma determinada conta: se consentimento for invalido, json tem mensagem de erro
+        #TODO:getContas(token)
+
+        headers = {'Content-Type': 'application/json'}
+        data = {"token": }
+        for membro in familia:
+            #pegar token da DB para membro
+            data = {"token": }
+            response = requests.get('https://backend-basica/get_conta', headers=headers, data = data)
+
         idLogin = json['id_login']
 
         #Familia

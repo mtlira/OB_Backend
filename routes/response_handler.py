@@ -6,7 +6,7 @@ def response(data, httpCode):
     response = app.response_class(
         response = json,
         status = httpCode,
-        mimetype = 'application/json'
+        #mimetype = 'application/json'
         )
     print(json)
     return response

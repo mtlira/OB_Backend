@@ -7,13 +7,16 @@ from model.controller.ctl_centralizar_contas import CTL_CentralizarContas
 from flask_cors import cross_origin
 from .blueprint import bp
 from .response_handler import response
-from flask import request
+from flask import request, redirect
 from config.env_load import SECRET_KEY
 from json import dumps
 # imports for PyJWT authentication
 import jwt
 from datetime import datetime, timedelta
 from functools import wraps
+
+from json import dumps
+from flask import make_response,url_for
 
 # decorator for verifying the JWT
 def token_required(f):
@@ -101,12 +104,12 @@ def API_centralizar_contas(json):
 @bp.route('/')
 @cross_origin()
 def home():
-    return "<p>homepage</p>"
+    return "home", 200
 
-#@bp.route('/favicon.ico')
-#@cross_origin()
-#def favicon():
-#    return "", 200
+@bp.route('/favicon.ico')
+@cross_origin()
+def favicon():
+    return "ola", 200
 
 # Links uteis: 
 # https://docs.sqlalchemy.org/en/14/orm/query.html

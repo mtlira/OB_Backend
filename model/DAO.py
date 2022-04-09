@@ -45,14 +45,15 @@ class DAO:
         else: return True
 
     def persistirConta(json):
-        idUsuario = db.session.query(Usuario.c.id_usuario).filter(Usuario.c.cpf == json['cpf_usuario']).one()[0]
+        idUsuario = db.session.query(Usuario.c.id_usuario).filter(Usuario.c.cpf == json['cpf']).one()[0]
         stmt = insert(Conta).values(
             id_banco = json['id_banco'],
             id_usuario = idUsuario,
-            agencia = json['agencia'],
-            cc = json['cc'],
-            saldo_cc = json['saldo_cc'],
-            saldo_pp = json['saldo_pp']
+            token = json['token']
+            #agencia = json['agencia'],
+            #cc = json['cc'],
+            #saldo_cc = json['saldo_cc'],
+            #saldo_pp = json['saldo_pp']
             )
         with db.engine.connect() as conn:
             conn.execute(stmt)
@@ -130,3 +131,7 @@ class DAO:
             #query = db.session.query(Movimentacao).filter(Movimentacao.c.id_banco_destino == id_banco and Movimentacao.c.id_usuario_destino == id_usuario)
         for movimentacao in query: movimentacoes.append(serialize(movimentacao, Movimentacao))
         return movimentacoes
+    
+    def updateToken(id_banco, id_login, token):
+        db.session.query(Conta).filter(Conta.c.id_usuario == id_login).update({"token": token}, synchronize_session = False)
+        db.session.commit()

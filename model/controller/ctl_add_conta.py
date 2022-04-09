@@ -6,10 +6,11 @@ class CTL_AddContaBancaria: #Ajustar retornos!!
         #Redireciona pra app básica pra criar o consentimento
         #Passar nome e cpf
         id = json['id_banco']
-        ag = json['agencia']
-        cc = json['cc']
-        idLogin = json['id_login']
-        #"OpenBanking.getConta(id, ag, cc)" (Implementar funcionalidade da app basica)
+        token = json['token']
+        #ag = json['agencia'] #tirar
+        #cc = json['cc'] #tirar
+        idLogin = json['id_login'] # Vem do front da inovadora
+        cpf = json['cpf']
 
         #Pedro Cunha
         conta1 = { #JSON obtido da app basica
@@ -51,33 +52,36 @@ class CTL_AddContaBancaria: #Ajustar retornos!!
             "saldo_pp": "5000"
         }
 
-        try:
-            if json['teste'] == "1": conta = conta1
-            if json['teste'] == "2": conta = conta2
-            if json['teste'] == "3": conta = conta3
-            if json['teste'] == "4": conta = conta4
+        #try:
+        #    if json['teste'] == "1": conta = conta1
+        #    if json['teste'] == "2": conta = conta2
+        #    if json['teste'] == "3": conta = conta3
+        #    if json['teste'] == "4": conta = conta4
         
-        except KeyError:
-            conta = conta1
+        #except KeyError:
+        #    conta = conta1
 
         usuario = DAO.getUsuario(idLogin, "idLogin")
         
-        if str(usuario['cpf']) != conta['cpf_usuario']:
-            print("Conta vinculada a outro CPF")
-            return {"mensagem":"OUTRO_CPF"}, 405
+        #if str(usuario['cpf']) != conta['cpf_usuario']:
+        #    print("Conta vinculada a outro CPF")
+        #    return {"mensagem":"OUTRO_CPF"}, 405
 
         # Verifica se (id, ag, cc) da conta estao corretos
-        elif conta == None or id != conta['id_banco'] or ag != conta['agencia'] or cc != conta['cc']:
-            print("Dados incorretos / Conta nao encontrada")
-            return {"mensagem":"NAO_ENCONTRADA"}, 405
+        # Acho que nao sera mais necessario
+        #elif conta == None or id != conta['id_banco'] or ag != conta['agencia'] or cc != conta['cc']:
+        #    print("Dados incorretos / Conta nao encontrada")
+        #    return {"mensagem":"NAO_ENCONTRADA"}, 405
 
-        elif DAO.contaExiste(id, usuario['cpf']):
-            print("Conta ja foi adicionada")
+        #TODO: se a conta existe, update. Se não, criar nova linha
+        if DAO.contaExiste(id, usuario['cpf']):
+            DAO.updateToken(id, idLogin, token)
+            print("Conta ja foi adicionada. Token update")
             return {"mensagem":"JA_ADICIONADA"}, 405
 
         else:
             #OpenBanking.compartilharDados() (Implementar na app basica)
-            DAO.persistirConta(conta)
+            DAO.persistirConta(json)
             print("Conta adicionada com sucesso")
             return {"mensagem":"OK"}, 201
 
