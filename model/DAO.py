@@ -107,7 +107,7 @@ class DAO:
     def getMembros(idFamilia):
         membros = []
         if idFamilia != None:
-            query = db.session.query(Usuario.c.id_usuario, Usuario.c.id_familia, Usuario.c.nome).join(Familia).filter(Usuario.c.id_familia == idFamilia).all()
+            query = db.session.query(Usuario.c.id_usuario, Usuario.c.id_familia, Usuario.c.nome, Usuario.c.cpf).join(Familia).filter(Usuario.c.id_familia == idFamilia).all()
             for usuario in query:
                 membros.append(serialize(usuario, Usuario))
         return membros
