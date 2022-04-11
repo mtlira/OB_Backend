@@ -13,4 +13,4 @@ class CTL_Login:
             #file.write("idlogin {}\ncpfLogin {}".format(str(usuario['id_usuario']),str(usuario['cpf'])))
             #file.close()
             print("Redirecionar para pagina Home")
-            return {"mensagem":"OK","id_login":"{}".format(usuario['id_usuario'])}, 201
+            return {"mensagem":"OK","id_login": usuario['id_usuario'], "cpf": usuario['cpf']}, 201

@@ -132,6 +132,14 @@ class DAO:
         for movimentacao in query: movimentacoes.append(serialize(movimentacao, Movimentacao))
         return movimentacoes
     
-    def updateToken(id_banco, id_login, token):
-        db.session.query(Conta).filter(Conta.c.id_usuario == id_login).update({"token": token}, synchronize_session = False)
+    def getToken(id_banco, id_usuario):
+        query = db.session.query(Conta.c.token).filter(and_(Conta.c.id_usuario == int(id_usuario),(Conta.c.id_banco == id_banco))).one_or_none()
         db.session.commit()
+        return query[0]
+
+    def updateToken(id_banco, id_login, token):
+        db.session.query(Conta).filter(Conta.c.id_usuario == int(id_login)).update({"token": token}, synchronize_session = False)
+        db.session.commit()
+
+if __name__ == "__main__":
+    DAO.getToken('1')

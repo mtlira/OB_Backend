@@ -57,8 +57,8 @@ def API_login():
     if data['mensagem'] == "OK":
         data['exp'] = datetime.utcnow() + timedelta(minutes = 60)
         data.pop('mensagem',None)
-        data = {"mensagem":"OK", "token":jwt.encode(data, SECRET_KEY)} # data inclui o token
-
+        data = {"mensagem":"OK", "token":jwt.encode(data, SECRET_KEY), "id_login": data['id_login'],  "cpf": data['cpf']} # data inclui o token
+        #TODO: fazer CTL.login retornar cpf e id_login
         # Para testes
         import os
         with open(os.path.join(os.path.dirname(__file__), '..','test','jwt.txt'), 'w') as file:
