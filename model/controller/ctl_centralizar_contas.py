@@ -41,8 +41,9 @@ class CTL_CentralizarContas:
                 headers = {'Content-Type': 'application/json'}
                 token = DAO.getToken(conta['id_banco'], membro['id_usuario'])
                 print("token getToken",token)
-                payload = dumps({"token": token})
+                payload = dumps({"token": token, "cpf": membro['cpf']})
                 response_json = requests.get(BASIC_APP_URL+'/get_conta', headers=headers, data = payload).json()
+                print(response_json)
                 conta['saldo_cc'] = Decimal(response_json['data']['availableAmount_CHECKING'])
                 conta['saldo_pp'] = Decimal(response_json['data']['availableAmount_SAVINGS'])
                 conta['movimentacoes'] = DAO.getMovimentacoes(conta['id_banco'], conta['id_usuario'], "pagamento")
