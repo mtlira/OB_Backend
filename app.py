@@ -11,10 +11,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = SQLALCHEMY_TRACK_MODIFICATIONS
 app.secret_key = SECRET_KEY
 app.config['CORS_HEADERS'] = CORS_HEADERS
-app.register_blueprint(bp)
+app.register_blueprint(bp, url_prefix = "/mangobank-back")
 db = SQLAlchemy(app)
 
 if __name__ == "__main__":
-    db.create_all()        
-    #app.run(host='0.0.0.0', port=80)
-    app.run(debug=True)
+    db.create_all()
+    if TEST_MODE == 'ON': app.run(debug=True)
+    else: app.run(host='0.0.0.0', port=80, debug = True)

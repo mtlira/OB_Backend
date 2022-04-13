@@ -16,7 +16,19 @@ spec:
   - host: acc-manager.southindia.cloudapp.azure.com
     http:
       paths:
-      - path: /
+      - path: /mangobank-back
         backend:
-          serviceName: aks-acc-manager
+          serviceName: aks-mangobank-back
+          servicePort: 80
+      - path: /mangobank-front
+        backend:
+          serviceName: aks-mangobank-front
+          servicePort: 80
+      - path: /openbanking-back
+        backend:
+          serviceName: aks-openbanking-back
+          servicePort: 80
+      - path: /openbanking-front
+        backend:
+          serviceName: aks-openbanking-front
           servicePort: 80

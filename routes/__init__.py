@@ -14,9 +14,7 @@ from json import dumps
 import jwt
 from datetime import datetime, timedelta
 from functools import wraps
-
 from json import dumps
-from flask import make_response,url_for
 
 # decorator for verifying the JWT
 def token_required(f):

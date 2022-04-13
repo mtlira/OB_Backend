@@ -1,0 +1,139 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aks-mangobank-back
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aks-mangobank-back
+  template:
+    metadata:
+      labels:
+        app: aks-mangobank-back
+    spec:
+      containers:
+      - name: mangobank-back
+        image: accountcentralizer.azurecr.io/mangobank-back
+        ports:
+        - containerPort: 80
+        env:
+        - name: TITLE
+          value: "Welcome to Azure Kubernetes Service (AKS)"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aks-openbanking-back
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aks-openbanking-back
+  template:
+    metadata:
+      labels:
+        app: aks-openbanking-back
+    spec:
+      containers:
+      - name: aks-openbanking-back
+        image: accountcentralizer.azurecr.io/openbanking-back
+        ports:
+        - containerPort: 80
+        env:
+        - name: TITLE2
+          value: "Welcome to Azure Kubernetes Service (AKS)"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aks-openbanking-front
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aks-openbanking-front
+  template:
+    metadata:
+      labels:
+        app: aks-openbanking-front
+    spec:
+      containers:
+      - name: aks-openbanking-front
+        image: accountcentralizer.azurecr.io/openbanking-front
+        ports:
+        - containerPort: 80
+        env:
+        - name: TITLE2
+          value: "Welcome to Azure Kubernetes Service (AKS)"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aks-mangobank-front
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aks-mangobank-front
+  template:
+    metadata:
+      labels:
+        app: aks-mangobank-front
+    spec:
+      containers:
+      - name: aks-mangobank-front
+        image: accountcentralizer.azurecr.io/mangobank-front
+        ports:
+        - containerPort: 80
+        env:
+        - name: TITLE2
+          value: "Welcome to Azure Kubernetes Service (AKS)"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aks-mangobank-back
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    app: aks-mangobank-back
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aks-openbanking-back
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    app: aks-openbanking-back
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aks-mangobank-front
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    app: aks-mangobank-front
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aks-openbanking-front
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    app: aks-openbanking-front
